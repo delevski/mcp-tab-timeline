@@ -1,0 +1,44 @@
+// Fictional demo session. Every name, URL and value here is made up.
+(function () {
+  const t0 = 1760000000000;
+  const shot = (title, sub, color, err) => 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="300" viewBox="0 0 480 300"><rect width="480" height="300" fill="#0b1220"/><rect x="0" y="0" width="480" height="28" fill="#111a2e"/><circle cx="14" cy="14" r="4" fill="#f87171"/><circle cx="28" cy="14" r="4" fill="#fbbf24"/><circle cx="42" cy="14" r="4" fill="#34d399"/><rect x="60" y="7" width="300" height="14" rx="7" fill="#1e2a44"/><text x="70" y="18" font-family="sans-serif" font-size="9" fill="#8aa0c8">shop.example.test/${sub}</text><rect x="24" y="48" width="432" height="26" rx="6" fill="#16223b"/><text x="36" y="66" font-family="sans-serif" font-size="13" fill="#e5edff">${title}</text><rect x="24" y="92" width="200" height="120" rx="8" fill="#16223b"/><rect x="240" y="92" width="216" height="26" rx="6" fill="#1e2a44"/><rect x="240" y="128" width="216" height="26" rx="6" fill="#1e2a44"/><rect x="240" y="170" width="216" height="42" rx="8" fill="${err ? '#7f1d1d' : color}"/><text x="258" y="196" font-family="sans-serif" font-size="13" fill="#fff">${err ? 'Payment failed' : 'Continue'}</text><text x="24" y="284" font-family="sans-serif" font-size="10" fill="#5b6f96">FICTIONAL DEMO DATA</text></svg>`);
+  const E = [];
+  let n = 0;
+  const add = (dt, lane, type, title, extra = {}) => E.push({ id: 'd' + (++n), t: t0 + dt, lane, type, title, status: 'ok', ...extra });
+  add(0, 'page', 'navigate', 'Recording started', { detail: { url: 'https://shop.example.test/' }, shot: shot('Acme Demo Shop', '', '#2563eb') });
+  add(300, 'agent', 'tool_call', 'browser_navigate', { dur: 1400, detail: { args: { url: 'https://shop.example.test/' }, result: 'Page loaded: Acme Demo Shop', server: 'browser-mcp' } });
+  add(350, 'network', 'request', 'GET shop.example.test/', { dur: 410, detail: { url: 'https://shop.example.test/', method: 'GET', statusCode: 200 } });
+  add(900, 'network', 'request', 'GET shop.example.test/api/products', { dur: 220, detail: { url: 'https://shop.example.test/api/products', method: 'GET', statusCode: 200 } });
+  add(1900, 'agent', 'tool_call', 'browser_snapshot', { dur: 380, detail: { args: {}, result: '42 interactive elements', server: 'browser-mcp' } });
+  add(2600, 'agent', 'tool_call', 'browser_click', { dur: 260, detail: { args: { element: 'Add to cart: Desk Lamp', ref: 'e18' }, result: 'Clicked', server: 'browser-mcp' } });
+  add(2700, 'page', 'click', 'Click: Add to cart', { detail: { selector: '#lamp > button.add', label: 'Add to cart', x: 340, y: 410 }, shot: shot('Desk Lamp added', 'product/lamp', '#2563eb') });
+  add(2780, 'network', 'request', 'POST shop.example.test/api/cart', { dur: 190, detail: { url: 'https://shop.example.test/api/cart', method: 'POST', statusCode: 200 } });
+  add(4000, 'agent', 'tool_call', 'browser_click', { dur: 240, detail: { args: { element: 'Cart', ref: 'e4' }, result: 'Clicked', server: 'browser-mcp' } });
+  add(4090, 'page', 'click', 'Click: Cart (1)', { detail: { selector: 'header > a.cart', label: 'Cart (1)', x: 1180, y: 38 } });
+  add(4200, 'page', 'navigate', 'Navigate: shop.example.test/cart', { detail: { url: 'https://shop.example.test/cart' }, shot: shot('Your cart: 1 item', 'cart', '#2563eb') });
+  add(5400, 'agent', 'tool_call', 'browser_type', { dur: 310, detail: { args: { element: 'Email', text: 'demo.user@example.test' }, result: 'Typed', server: 'browser-mcp' } });
+  add(5500, 'page', 'input', 'Type: Email', { detail: { selector: '#email', label: 'Email', value: 'demo.user@example.test', masked: false } });
+  add(6700, 'agent', 'tool_call', 'browser_type', { dur: 290, detail: { args: { element: 'Card number', text: '[redacted]' }, result: 'Typed', server: 'browser-mcp' } });
+  add(6800, 'page', 'input', 'Type: Card number', { detail: { selector: '#card', label: 'Card number', value: '\u2022\u2022\u2022\u2022', masked: true } });
+  add(8000, 'agent', 'tool_call', 'browser_click', { dur: 5200, detail: { args: { element: 'Pay now', ref: 'e31' }, result: 'Clicked (timed out waiting for navigation)', server: 'browser-mcp' } });
+  add(8100, 'page', 'click', 'Click: Pay now', { detail: { selector: '#pay', label: 'Pay now', x: 610, y: 520 }, shot: shot('Checkout', 'checkout', '#2563eb') });
+  add(8250, 'network', 'request', 'POST shop.example.test/api/charge', { dur: 3100, status: 'error', detail: { url: 'https://shop.example.test/api/charge', method: 'POST', statusCode: 502 } });
+  add(11400, 'console', 'console.error', 'Console error', { status: 'error', detail: { label: 'Charge failed: upstream 502 (demo)', url: 'https://shop.example.test/checkout' }, shot: shot('Payment failed', 'checkout', '#2563eb', true) });
+  add(13500, 'agent', 'tool_call', 'browser_click', { dur: 210, detail: { args: { element: 'Pay now', ref: 'e31' }, result: 'Clicked', server: 'browser-mcp' } });
+  add(13600, 'page', 'click', 'Click: Pay now', { detail: { selector: '#pay', label: 'Pay now', x: 610, y: 520 } });
+  add(14200, 'page', 'click', 'Click: Pay now', { detail: { selector: '#pay', label: 'Pay now', x: 612, y: 521 } });
+  add(14800, 'page', 'click', 'Click: Pay now', { detail: { selector: '#pay', label: 'Pay now', x: 611, y: 519 } });
+  add(14000, 'network', 'request', 'POST shop.example.test/api/charge', { dur: 900, status: 'error', detail: { url: 'https://shop.example.test/api/charge', method: 'POST', statusCode: 502 } });
+  add(16500, 'agent', 'tool_call', 'browser_wait_for', { dur: 2600, detail: { args: { time: 2 }, result: 'Waited 2s', server: 'browser-mcp' } });
+  add(19300, 'agent', 'tool_call', 'browser_navigate', { dur: 1100, detail: { args: { url: 'https://shop.example.test/checkout?retry=1' }, result: 'Page loaded', server: 'browser-mcp' } });
+  add(19400, 'page', 'navigate', 'Navigate: shop.example.test/checkout', { detail: { url: 'https://shop.example.test/checkout?retry=1' }, shot: shot('Checkout (retry)', 'checkout?retry=1', '#2563eb') });
+  add(19500, 'network', 'request', 'GET shop.example.test/checkout', { dur: 380, detail: { url: 'https://shop.example.test/checkout?retry=1', method: 'GET', statusCode: 200 } });
+  add(21200, 'agent', 'tool_call', 'browser_click', { dur: 280, detail: { args: { element: 'Pay now', ref: 'e12' }, result: 'Clicked', server: 'browser-mcp' } });
+  add(21300, 'page', 'click', 'Click: Pay now', { detail: { selector: '#pay', label: 'Pay now', x: 610, y: 520 } });
+  add(21400, 'network', 'request', 'POST shop.example.test/api/charge', { dur: 520, detail: { url: 'https://shop.example.test/api/charge', method: 'POST', statusCode: 200 } });
+  add(22100, 'page', 'navigate', 'Navigate: shop.example.test/thanks', { detail: { url: 'https://shop.example.test/thanks' }, shot: shot('Order confirmed', 'thanks', '#059669') });
+  add(23000, 'agent', 'tool_call', 'browser_snapshot', { dur: 350, detail: { args: {}, result: 'Heading: Order confirmed', server: 'browser-mcp' } });
+  E.sort((a, b) => a.t - b.t);
+  window.MTT_DEMO = [{ id: 'demo-checkout', name: 'Demo: checkout agent (fictional)', startedAt: t0, endedAt: t0 + 24000, url: 'https://shop.example.test/', events: E, bridge: true, source: 'demo' }];
+})();

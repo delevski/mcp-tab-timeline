@@ -1,0 +1,9 @@
+{
+  "name": "mcp-tab-timeline-bridge",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local bridge and MCP proxy that feed agent tool calls into MCP Tab Timeline",
+  "bin": { "mcp-tab-timeline-bridge": "server.mjs", "mcp-tap": "mcp-tap.mjs" },
+  "scripts": { "start": "node server.mjs", "test": "node --test ../test" },
+  "license": "MIT"
+}
